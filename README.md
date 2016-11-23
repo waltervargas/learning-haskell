@@ -8,8 +8,9 @@ $ ghc --make example.hs
 ```
 
 ## Fibonacci `fibs.hs`
-After compile it, for example to generate a the list of first 1000 Fibonacci
-numbers:
+Fibonacci is like the hello world in Haskell, you can test this example by
+compiling it and pass a number as argument, for example to generate a the list
+of first 1000 Fibonacci numbers:
 
 ```
 ./fibs 1000 
