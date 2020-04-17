@@ -41,7 +41,7 @@ factorial' :: (Num a, Enum a) => a -> a
 * Float
 Float is real floating point with single precision
 
-#+BEGIN_SRC haskell
+#+BEGIN_SRC haskell :exports both
 circumference :: Float -> Float
 circumference r = 2 * pi * r
 
@@ -55,7 +55,7 @@ circumference 4.0
 * Double
 is a real floating point with double the precision!
 
-#+BEGIN_SRC haskell
+#+BEGIN_SRC haskell :exports both
 circumference :: Double -> Double
 circumference r = 2 * pi * r
 
@@ -69,7 +69,7 @@ circumference 4.0
 Because the =head= function takes a list of any type and returns the first
 element, so whay could it be his type?
 
-#+BEGIN_SRC haskell
+#+BEGIN_SRC haskell :exports both
 :t head
 #+END_SRC
 
@@ -91,7 +91,7 @@ give them names of a,b,c,d ...
 
 The =fst= function returns the first component of a pair.
 
-#+BEGIN_SRC haskell
+#+BEGIN_SRC haskell :exports both
 :t fst
 #+END_SRC
 
@@ -117,7 +117,7 @@ but even better.
 
 For example, let's explore the signature of the ~(==)~ function:
 
-#+BEGIN_SRC haskell
+#+BEGIN_SRC haskell :exports both
 :t (==)
 #+END_SRC
 
@@ -134,3 +134,4 @@ where it makes sense to test for equiality between two values of that type shuld
 be a member of the ~Eq~ class. All standard Haskell types except for IO (the
 type for dealing with input and output) and functions are part of the ~Eq~
 typeclass.
+
