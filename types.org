@@ -135,3 +135,88 @@ be a member of the ~Eq~ class. All standard Haskell types except for IO (the
 type for dealing with input and output) and functions are part of the ~Eq~
 typeclass.
 
+** Some basic typeclasses
+*** Eq
+Is used for types that support equality testing. The functions its members
+implements are ~==~ and ~/=~. So, if there is an ~Eq~ class constraint for a
+type variable in a function, the function uses ~==~ or ~/=~ somewhere inside the
+functiion definition.
+
+#+BEGIN_SRC haskell :exports both
+:t (==)
+#+END_SRC
+
+#+RESULTS:
+: (==) :: Eq a => a -> a -> Bool
+
+#+BEGIN_SRC haskell :exports both
+:t (/=)
+#+END_SRC
+
+#+RESULTS:
+: (/=) :: Eq a => a -> a -> Bool
+
+#+BEGIN_SRC haskell :exports both :session isTheHeadNumber3
+isTheHeadNumber3 :: (Eq a, Num a) => [a] -> Bool
+isTheHeadNumber3 (x:_) = x == 3
+
+isTheHeadNumber3 [3,4,5,6]
+#+END_SRC
+
+#+RESULTS:
+: True
+
+#+BEGIN_SRC haskell :exports both :session isTheHeadNumber3
+:t isTheHeadNumber3
+#+END_SRC
+
+#+RESULTS:
+: isTheHeadNumber3 :: (Eq a, Num a) => [a] -> Bool
+
+*** Ord
+#+BEGIN_QUOTE
+To be a member of ~Ord~, a type must first be a member of ~Eq~.
+#+END_QUOTE
+
+For types that have ordering, ~Ord~ covers all the standard comparing functions
+such as ~<~, ~>~, ~>=~ and ~<=~. The ~compare~ function takes two ~Ord~ class
+members of the same type and returns and ordering. =Ordering= is a type that can
+be ~GT~ (greater than), ~LT~ (lesser than), or ~EQ~ (equal).
+
+#+BEGIN_SRC haskell :exports both
+:t compare
+#+END_SRC
+
+#+RESULTS:
+: compare :: Ord a => a -> a -> Ordering
+
+#+BEGIN_SRC haskell :exports both
+compare 5 5
+#+END_SRC
+
+#+RESULTS:
+: EQ
+
+#+BEGIN_SRC haskell :exports both
+compare 5 4
+#+END_SRC
+
+#+RESULTS:
+: GT
+
+#+BEGIN_SRC haskell :exports both
+(==) LT $ compare [1,2,3,4] [90]
+#+END_SRC
+
+#+RESULTS:
+: True
+
+
+*** Show
+*** Read
+*** Enum
+*** Bounded
+*** Num
+*** Integral
+*** Floating
+***
