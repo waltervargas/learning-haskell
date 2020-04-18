@@ -211,12 +211,273 @@ compare 5 4
 #+RESULTS:
 : True
 
-
 *** Show
+Members of ~Show~ can be presented as strings. The most used function that deals
+with type class ~Show~ is ~show~.
+
+~show~ takes a value whose type is a member of ~Show~ and returns a string.
+
+#+BEGIN_SRC haskell :exports both
+show 3
+#+END_SRC
+
+#+RESULTS:
+: 3
+
+#+BEGIN_SRC haskell :exports both
+show True
+#+END_SRC
+
+#+RESULTS:
+: True
+
+#+BEGIN_SRC haskell :exports both
+:t show
+#+END_SRC
+
+#+RESULTS:
+: show :: Show a => a -> String
+
 *** Read
+~Read~ is sort of the opposite typeclass of ~Show~. The ~read~ function takes a
+string and returns a type which is a member of ~Read~.
+
+#+BEGIN_SRC haskell :exports both
+read "True" || False
+#+END_SRC
+
+#+RESULTS:
+: True
+
+#+BEGIN_SRC haskell :exports both
+read "8.2" + 3.8
+#+END_SRC
+
+#+RESULTS:
+: 12.0
+
+#+BEGIN_SRC haskell :exports both
+read "5" - 2
+#+END_SRC
+
+#+RESULTS:
+: 3
+
+#+BEGIN_SRC haskell :exports both :results value raw
+read "[1,2,3,4,5]" ++ [3,3,4]
+#+END_SRC
+
+#+RESULTS:
+[1,2,3,4,5,3,3,4]
+
+What happens if we try just to do ~read "4"~?
+
+#+BEGIN_SRC haskell :exports both
+read "4"
+#+END_SRC
+
+#+RESULTS:
+: *** Exception: Prelude.read: no parse
+
+What GHCI is telling us here is that it dosn't know what to return. In the
+previous examples we did something with the results of ~read~. In that way GHCI
+knows what type is need for the expression. If we used the returned value as a
+boolean, it knew it had to return a ~Bool~. For ~read "4"~ GHCI knows that we
+want a type of the class ~Read~, just don't know which one we want.
+
+#+BEGIN_SRC haskell :exports both
+:t read
+#+END_SRC
+
+#+RESULTS:
+: read :: Read a => String -> a
+
+It returns a type that is part of ~Read~, but if we don't used it later, there
+is no way of knowing which type needs to be returned.
+
+**** Type Annotations
+For cases like ~read "4"~ we can use explicit *type annotations*. Type
+annotations provides a way of explicitly saying which type should have an
+expression. We can use *type annotations* by adding ~::~ at the end of the
+expression and then specifiying a type.
+
+#+BEGIN_SRC haskell :exports both
+read "5" :: Int
+#+END_SRC
+
+#+RESULTS:
+: 5
+
+#+BEGIN_SRC haskell :exports both
+4 * (read "5" :: Float)
+
+#+END_SRC
+
+#+RESULTS:
+: 20.0
+
+#+BEGIN_SRC haskell :exports both :results value raw
+read "[1,2,3,4]" :: [Int]
+#+END_SRC
+
+#+RESULTS:
+[1,2,3,4]
+
+#+BEGIN_SRC haskell :exports both :results value raw
+read "(3, 'a')" :: (Int, Char)
+#+END_SRC
+
+#+RESULTS:
+(3,'a')
+
+Since Haskell is statically typed language, it has to know all the types before
+the code is compiled. So we have to tell Haskell "Hey, this expression have this
+type, in case you don't know it".
+
+Most expressions are such that the compiler can infer the type. But sometimes,
+for an expression like ~read "5"~, the compiler dosn't know whether to return a
+value of type ~Int~ or ~Float~.
+
 *** Enum
+~Enum~ members are sequentially ordered types, they can be enumerated. The main
+advantage is members of ~Enum~ is that we can use them in ranges. Members of
+~Enum~ also have defined successors and predecesors, which can be get with the
+~succ~ and ~pred~ functions.
+
+Types in this class: ~()~, ~Bool~, ~Char~, ~Ordering~, ~Int~, ~Integer~,
+~Float~, and ~Double~.
+
+#+BEGIN_SRC haskell :exports both :results value raw :session bah
+['a'..'z']
+#+END_SRC
+
+#+RESULTS:
+abcdefghijklmnopqrstuvwxyz
+
+#+BEGIN_SRC haskell :exports both :results value raw
+[LT .. GT]
+#+END_SRC
+
+#+RESULTS:
+[LT,EQ,GT]
+
+#+BEGIN_SRC haskell :exports both
+succ 'B'
+#+END_SRC
+
+#+RESULTS:
+: C
+
 *** Bounded
+~Bounded~ members have an upper and a lower bound.
+
+#+BEGIN_SRC haskell :exports both
+minBound :: Int
+#+END_SRC
+
+#+RESULTS:
+: -9.223372036854776e+18
+
+#+BEGIN_SRC haskell :exports both
+minBound :: Char
+#+END_SRC
+
+#+RESULTS:
+: \NUL
+
+#+BEGIN_SRC haskell :exports both
+minBound :: Bool
+#+END_SRC
+
+#+RESULTS:
+: False
+
+#+BEGIN_SRC haskell :exports both
+maxBound :: Bool
+#+END_SRC
+
+#+RESULTS:
+: True
+
+~minBound~ and ~maxBound~ are interesting because they have a type of:
+~(Bounded a) => a~. In a sense they are polymorphic constants.
+
+All tuples are also part of ~Bounded~ if the components are also in it
+
+#+BEGIN_SRC haskell :exports both :results value raw
+maxBound :: (Bool, Int, Char)
+#+END_SRC
+
+#+RESULTS:
+(True,9223372036854775807,'\1114111')
+
+
 *** Num
-*** Integral
-*** Floating
-***
+#+BEGIN_QUOTE
+To join ~Num~ a type must be already a member of ~Show~ and ~Eq~.
+#+END_QUOTE
+
+Num is a numeric typeclass. Its members have the property of being able to act
+as numbers.
+
+#+BEGIN_SRC haskell :exports both
+:t 20
+#+END_SRC
+
+#+RESULTS:
+: 20 :: Num p => p
+
+#+BEGIN_SRC haskell :exports both
+20 :: Float
+#+END_SRC
+
+#+RESULTS:
+: 20.0
+
+#+BEGIN_SRC haskell :exports both
+20 :: Double
+#+END_SRC
+
+#+RESULTS:
+: 20.0
+
+#+BEGIN_SRC haskell :exports both
+20 :: Integer
+#+END_SRC
+
+#+RESULTS:
+: 20
+
+If we examine the type of ~(*)~, we will see that it accepts all types of
+numbers.
+
+#+BEGIN_SRC haskell :exports both :results value raw
+:t (*)
+#+END_SRC
+
+#+RESULTS:
+(*) :: Num a => a -> a -> a
+
+It takes two numbers of the same type and returns a number or that type. That is
+why ~(5 :: Int) * (6 :: Integer)~ will result in a type error whereas
+~5 * (6 :: Integer)~ will work just fine and produce an ~Integer~ becase ~5~ act
+like an ~Integer~ or an ~Int~.
+
+
+**** Integral
+~Integral~ is also a numeric typeclass. ~Num~ includes all numbers, including
+real numbers an integral numbers, ~Integral~ includes only integral (whole)
+numbers. In this typeclass are ~Int~ and ~Integer~
+
+**** Floating
+~Floating~ includes all floating point numbers, so ~Float~ and ~Double~
+
+A very useful function for dealing with numbers is ~fromIntegral~
+
+
+#+BEGIN_SRC haskell :exports both
+:t fromIntegral
+#+END_SRC
+
+#+RESULTS:
+: fromIntegral :: (Integral a, Num b) => a -> b
